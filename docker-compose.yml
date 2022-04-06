@@ -8,6 +8,8 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-pwd}
       PGDATA: /data/postgres
+      POSTGRES_HOST_AUTH_METHOD: trust
+
     volumes:
        - postgres:/data/postgres
     ports:
