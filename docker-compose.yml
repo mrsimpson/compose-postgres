@@ -34,6 +34,30 @@ services:
       - postgres
     restart: unless-stopped
 
+  rest:
+    image: postgrest/postgrest
+    ports:
+      - "3000:3000"
+    environment:
+      PGRST_DB_URI: postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-pwd}@postgres:5432/postgres
+      PGRST_DB_SCHEMAS: public
+      PGRST_DB_ANON_ROLE: ${POSTGRES_USER:-postgres} #In production this role should not be the same as the one used for the connection
+      PGRST_OPENAPI_SERVER_PROXY_URI: http://127.0.0.1:3000
+    networks:
+      - postgres
+    depends_on:
+      - postgres
+
+  swagger:
+    image: swaggerapi/swagger-ui
+    ports:
+      - "8080:8080"
+    expose:
+      - "8080"
+    environment:
+      API_URL: http://localhost:3000/
+    networks:
+      - postgres
 networks:
   postgres:
     driver: bridge
